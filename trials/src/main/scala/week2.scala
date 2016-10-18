@@ -31,4 +31,24 @@ class week2 {
   //def bob = sum3( x => x*x)
   //bob(1,4)
 
+  def product(f:Int => Int)(a:Int, b:Int):Int = {
+    if (a>b) 1
+    else f(a) * product(f)(a+1,b)
+  }
+  product(x => x*x)(1,3)
+
+  def factorial(n:Int) :Int = product(x => x)(1,n)
+
+  factorial(4)
+
+  //generalised function for product annd sum
+  // he called this a mapReduce
+  def general(combiner:(Int,Int)=>Int,identity:Int)(f:Int => Int,a:Int, b:Int) :Int = {
+    if (a > b) identity
+    else combiner(f(a), general(combiner, identity)(f, a + 1, b))
+  }
+  def fact(n:Int):Int = general((x:Int, y:Int)=> x*y,1)(x=> x,1,n)
+  def product(f:Int=>Int,a:Int, b:Int) = general((x:Int, y:Int)=> x*y,1)(f,a,b)
+  def sum4(f:Int=>Int,a:Int, b:Int) = general((x:Int, y:Int)=> x+y,0)(f,a,b)
+  fact(4)
 }
