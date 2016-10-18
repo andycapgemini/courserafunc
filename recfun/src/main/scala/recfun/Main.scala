@@ -43,7 +43,6 @@ object Main {
   def countChange(money:Int, coins:List[Int]): Int = {
 
       if (coins.isEmpty || money<0) return 0
-
       if (money==0) return 1
       // this was really hard!
       countChange(money-coins.head,coins) + countChange(money,coins.tail)
