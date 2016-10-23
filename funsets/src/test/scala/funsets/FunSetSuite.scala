@@ -86,7 +86,7 @@ class FunSetSuite extends FunSuite {
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
-  test("singletonSet(1) contains 1") {
+  test("singletonSet is implemented") {
 
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -98,6 +98,7 @@ class FunSetSuite extends FunSuite {
        * the test fails. This helps identifying which assertion failed.
        */
       assert(contains(s1, 1), "Singleton")
+      assert(!contains(s1,2), "Singleton negative test")
     }
   }
 
@@ -107,6 +108,76 @@ class FunSetSuite extends FunSuite {
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+    }
+  }
+
+  test("intersection tests") {
+    new TestSets {
+      val i = intersect(s1,s2)
+      assert(!contains(i,1), "intersect 1")
+      assert(!contains(i,2), "intersect 2")
+      val i2 = intersect(s1,s1)
+      assert(contains(i2,1), "intersect 3")
+    }
+  }
+
+  test("diff tests") {
+    new TestSets {
+      val i = diff(s1, s2)
+      assert(contains(i, 1), "diff test 1")
+      assert(!contains(i, 2), "diff test 2")
+      val i2 = diff(s1, s1)
+      assert(!contains(i2, 1), "diff test 3")
+      assert(!contains(i2, 2), "diff test 4")
+    }
+  }
+
+  test("filter tests") {
+    new TestSets {
+      val i = filter(s1,x=> x==1)
+      assert(contains(i,1),"filter test 1")
+      val i2 = filter(s1,x=> x==2)
+      assert(!contains(i2,1),"filter test 1")
+    }
+  }
+
+  test("forall tests") {
+    new TestSets {
+      val evenSet: Set = x => (x % 2 == 0)
+
+      assert(contains(evenSet, 4), "test evenset 1")
+      assert(!contains(evenSet, 5), "test evenset 2")
+
+      assert(!forall(evenSet, x => x > 0), "test evenset 3")
+      assert(forall(evenSet, x => x % 2 == 0), "test evenset 4")
+      assert(!forall(evenSet, x => x % 3 == 0), "test evenset 5")
+
+      assert(forall(s1, x => x==1), "test forall 6")
+      assert(!forall(s1, x => x==2), "test forall 7")
+
+      val emptySet: Set = x => false
+
+      // it seems to be accepted that this should return true - it feels like it should return false
+      assert(forall(emptySet, x=> x>0), "test forall 8")
+    }
+  }
+
+  test("exists test") {
+    new TestSets {
+      val evenSet: Set = x => (x % 2 == 0)
+
+      assert(exists(evenSet,x => x==2))
+
+      assert(!exists(evenSet, x=> x==3))
+    }
+  }
+
+  test("map tests") {
+    new TestSets {
+      val evenSet: Set = x => (x % 2 == 0)
+      val squaredEvens: Set = map(evenSet, x=>x*x)
+      assert(contains(squaredEvens,4),"map 1")
+      assert(!contains(squaredEvens,5),"map 1")
     }
   }
 

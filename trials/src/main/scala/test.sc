@@ -27,13 +27,13 @@ sum3(x => x*x)(1,4)
 //def bob = sum3( x => x*x)
 //bob(1,4)
 
-def product(f:Int => Int)(a:Int, b:Int):Int = {
+def product1(f:Int => Int)(a:Int, b:Int):Int = {
   if (a>b) 1
-  else f(a) * product(f)(a+1,b)
+  else f(a) * product1(f)(a+1,b)
 }
-product(x => x*x)(1,3)
+product1(x => x*x)(1,3)
 
-def factorial(n:Int) :Int = product(x => x)(1,n)
+def factorial(n:Int) :Int = product1(x => x)(1,n)
 
 factorial(4)
 
@@ -47,3 +47,40 @@ def fact(n:Int):Int = general((x:Int, y:Int)=> x*y,1)(x=> x,1,n)
 def product(f:Int=>Int,a:Int, b:Int) = general((x:Int, y:Int)=> x*y,1)(f,a,b)
 def sum4(f:Int=>Int,a:Int, b:Int) = general((x:Int, y:Int)=> x+y,0)(f,a,b)
 fact(4)
+
+class Rational(x:Int, y:Int) {
+  require(y !=0, "denominator must be non zero")
+
+  def this(x:Int) = this(x,1)
+
+  private def gcd(a:Int, b:Int): Int = if (b==0) a else gcd (b, a%b)
+  private val g = gcd(x,y)
+  val numer = x / g
+  val denom = y / g
+
+  override def toString = numer + "/" + denom
+
+  def unary_- : Rational = new Rational(-numer, denom)
+
+  def + (that: Rational) =
+    new Rational(numer * that.denom + that.numer * denom, denom * that.denom)
+
+
+  def  - (that: Rational): Rational = this + -that
+
+  def < (that:Rational) = numer*that.denom < that.numer*denom
+
+  def max(that:Rational) = if (this < that) that else this
+}
+
+
+val x = new Rational(1,2)
+val y = new Rational(5, 7)
+val z = new Rational(3, 2)
+
+//z.subtract(y).subtract(x)
+
+x - x
+x + x
+
+val trouble = new Rational(1,0)
