@@ -7,7 +7,7 @@ import TweetReader._
  */
 class Tweet(val user: String, val text: String, val retweets: Int) {
   override def toString: String =
-    "User: " + user + "\n" +
+    "User: " + user + " " +
     "Text: " + text + " [" + retweets + "]"
 }
 
@@ -137,11 +137,15 @@ class Empty extends TweetSet {
   def mostRetweeted: Tweet = throw new NoSuchElementException("mostRetweeted EmptySet")
 
   def mrhelper(currentBest:Tweet) = currentBest
+
+  override def toString():String = "."
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
     def isEmpty = false
+
+    override def toString():String = "{"+left+" "+elem+" "+right+"}"
 
     def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
       val t:TweetSet = if (p(elem)) acc.incl(elem) else acc
@@ -176,7 +180,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   }
 
   override def union(that: TweetSet): TweetSet = {
-    left union right union that incl elem
+    val t:TweetSet = if (!that.contains(elem)) that.incl(elem) else that
+    right.union(left.union(t))
   }
 
   def mostRetweeted: Tweet = {
@@ -215,6 +220,8 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
+  lazy val allTweets: TweetSet = TweetReader.allTweets
+
   lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(t => google.exists(term => t.text.contains(term)))
 
 
@@ -229,7 +236,6 @@ object GoogleVsApple {
   }
 
 object Main extends App {
-  // Print the trending tweets
-  println("here")
+
   GoogleVsApple.trending foreach println
 }
