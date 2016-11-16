@@ -113,3 +113,37 @@ val z: Array[IntSet] = a
 z(0) = Empty
 val s: NonEmpty = a(0)
 */
+
+trait Expr
+case class Num(n:Int) extends Expr
+case class Sum(e1:Expr, e2:Expr) extends Expr
+case class Prod(e1:Expr, e2:Expr) extends Expr
+case class Var(s:String) extends Expr
+
+
+def show(e:Expr):String = {
+  e match {
+    case Num(n) => n.toString
+    case Sum(e1, e2) => show(e1) + "+" + show(e2)
+    case Prod(n:Sum,e2) => "("+show(n)+")"+"*"+show(e2)
+    case Prod(l,r) => show(l) + "*"+show(r)
+    case Var(s) => s
+  }
+}
+
+val s: Num = Num(2)
+val r: Num = Num(3)
+val add:Expr = Sum(s,r)
+
+show(s)
+show(add)
+
+show(Sum(Prod(Num(2),Var("x")), Var("y")))
+
+show(Prod(Sum(Num(2),Var("x")),Sum(Num(3),Var("y"))))
+
+def insert(x:Int,xs:List[Int]): List[Int] = xs match {
+  case List() => x :: Nil
+  case y :: ys => if (y>=x) x :: xs else y :: insert(x,ys)
+}
+
