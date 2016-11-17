@@ -56,6 +56,8 @@ class HuffmanSuite extends FunSuite {
       assert(times(hw) === hwLeaves)
       assert(makeOrderedLeafList(hwLeaves) === hwOrderedLeafList)
       assert(createCodeTree(hw).toString === hwtree.toString)
+      assert(decode(hwtree,encode(hwtree)(hw)) === hw)
+      assert(decode(hwtree,quickEncode(hwtree)(hw)) === hw)
     }
   }
 
